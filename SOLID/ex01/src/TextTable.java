@@ -1,5 +1,7 @@
-public class TextTable {
-    public static String render3(FakeDb db) {
+public class TextTable 
+{
+    public static String render3(StudentRepository db) 
+    {
         StringBuilder sb = new StringBuilder();
         sb.append("| ID             | NAME | PROGRAM |\n");
         for (StudentRecord r : db.all()) {

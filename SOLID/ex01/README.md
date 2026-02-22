@@ -1,7 +1,7 @@
-# Ex1 — SRP: Student Onboarding Registration
+# ex01 — SRP: Student Onboarding Registration
 
 ## 1. Context
-You are building a simple onboarding flow for new students. The system accepts a raw input string, validates fields, generates a student ID, saves to a store, and prints a confirmation.
+We are building a simple onboarding flow for new students. The system accepts a raw input string, validates fields, generates a student ID, saves to a store, and prints a confirmation.
 
 ## 2. Current behavior (what it does today)
 - Parses a raw line like: `name=Riya;email=riya@sst.edu;phone=9876543210;program=CSE`
@@ -10,7 +10,7 @@ You are building a simple onboarding flow for new students. The system accepts a
 - Saves the student record to an in-memory “DB”
 - Prints a confirmation block and a small table dump
 
-## 3. What’s wrong with the design (at least 5 issues)
+## 3. What’s wrong with the design
 1. `OnboardingService` mixes parsing, validation, ID generation, persistence, and printing.
 2. Hard-coded program rules inside the same method as IO/printing.
 3. Validation errors are printed directly instead of being represented cleanly.
@@ -19,7 +19,7 @@ You are building a simple onboarding flow for new students. The system accepts a
 6. Utility logic is scattered (some in `IdUtil`, some inline).
 7. Hard to unit test because everything runs inside one “do-it-all” method.
 
-## 4. Your task (step-by-step refactor plan with checkpoints)
+## 4. Our task (step-by-step refactor plan with checkpoints)
 Checkpoint A:
 - Run the program and capture output.
 - Identify responsibilities currently inside `OnboardingService.registerFromRawInput`.
@@ -40,26 +40,22 @@ Checkpoint E:
 - Extract printing/formatting responsibilities away from the onboarding workflow.
 - Preserve exact console output.
 
-## 5. Constraints
-- Keep `Main` output exactly the same.
-- Keep `StudentRecord` fields and `toString()` unchanged.
-- No external libraries.
-- Default package only.
+## 5. What we did
 
-## 6. Acceptance criteria
-- Program output is unchanged.
-- `OnboardingService` no longer directly formats output and no longer directly knows `FakeDb`.
-- Validation rules are testable without console IO.
-- Adding a new field (e.g., `city`) should not require editing a “god method”.
+| Principle | Evidence |
+|-----------|----------|
+| SRP | Each class has ONE job: Parser parses, Validator validates, Printer prints, Service orchestrates. |
+| OCP | OnboardingService closed for modification. Open for extension via StudentRepository interface (can add SqlRepository, FileRepository later). |
+| LSP | Any StudentRepository implementation can substitute FakeDb without breaking the service. |
 
-## 7. How to run
+## 6. How to run
 ```bash
-cd SOLID/Ex1/src
+cd SOLID/ex01/src
 javac *.java
-java Main
+java Demo01
 ```
 
-## 8. Sample output (must match)
+## 7. Output after refactor
 ```text
 === Student Onboarding ===
 INPUT: name=Riya;email=riya@sst.edu;phone=9876543210;program=CSE
@@ -72,12 +68,3 @@ StudentRecord{id='SST-2026-0001', name='Riya', email='riya@sst.edu', phone='9876
 | ID             | NAME | PROGRAM |
 | SST-2026-0001   | Riya | CSE     |
 ```
-
-## 9. Hints (OOP-only)
-- Prefer passing structured data between steps rather than re-parsing strings.
-- Prefer composition: onboarding workflow can *use* a parser/validator/saver/printer.
-- Keep public APIs stable; move details behind small interfaces.
-
-## 10. Stretch goals
-- Add a second input example that fails validation, without duplicating logic.
-- Make program list configurable without touching onboarding workflow code.
