@@ -1,5 +1,8 @@
-public class FakeEligibilityStore {
-    public void save(String roll, String status) {
-        System.out.println("Saved evaluation for roll=" + roll);
+public class FakeEligibilityStore implements EligibilityRepository 
+{
+    @Override
+    public void save(String rollNo, String status) 
+    {
+        System.out.println("Saved evaluation for roll=" + rollNo);
     }
 }

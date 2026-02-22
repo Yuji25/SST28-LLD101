@@ -1,4 +1,4 @@
-# Ex3 — OCP: Placement Eligibility Rules Engine
+# ex03 — OCP: Placement Eligibility Rules Engine
 
 ## 1. Context
 Placement eligibility depends on multiple rules: CGR threshold, attendance percentage, earned credits, and disciplinary flags. More rules will be added later.
@@ -8,7 +8,7 @@ Placement eligibility depends on multiple rules: CGR threshold, attendance perce
 - Returns ELIGIBLE or NOT_ELIGIBLE with reasons
 - Prints a report
 
-## 3. What’s wrong with the design (at least 5 issues)
+## 3. What’s wrong with the design
 1. `EligibilityEngine.evaluate` is a long if/else chain with mixed responsibilities.
 2. Adding a new rule requires editing the same method (risk of regressions).
 3. Rule configuration is hard-coded.
@@ -16,29 +16,34 @@ Placement eligibility depends on multiple rules: CGR threshold, attendance perce
 5. Engine does persistence-ish logging via `FakeEligibilityStore`.
 6. Type/flag logic is scattered.
 
-## 4. Your task
-Checkpoint A: Run and capture output.
-Checkpoint B: Move each rule to its own unit (class) behind a shared abstraction.
-Checkpoint C: Make it possible to add a new rule without editing the main evaluation logic.
-Checkpoint D: Keep report text identical.
+## 4. Our task
+Checkpoint A:
+- Run and capture output.
 
-## 5. Constraints
-- Keep `StudentProfile` fields unchanged.
-- Preserve order of reasons in output.
-- No external libraries.
+Checkpoint B: 
+- Move each rule to its own unit (class) behind a shared abstraction.
 
-## 6. Acceptance criteria
-- New eligibility rule can be added by creating a new class and wiring it with minimal edits.
-- No giant conditional chains.
+Checkpoint C: 
+- Make it possible to add a new rule without editing the main evaluation logic.
 
-## 7. How to run
+Checkpoint D: 
+- Keep report text identical.
+
+## 5. Humne kya kiya
+| Principle | Evidence |
+|-----------|----------|
+| S (SRP) | Each rule has ONE responsibility. EligibilityEngine handles orchestration only. ReportPrinter handles formatting only. EligibilityRepository handles persistence only. |
+| O (OCP) | EligibilityEngine is closed for modification and open for extension via the EligibilityRule interface (new rules like ProjectRule or InternshipRule can be added without editing the engine). |
+| L (LSP) | Any EligibilityRule or EligibilityRepository implementation can substitute the existing one without breaking the system. |
+
+## 6. How to run
 ```bash
-cd SOLID/Ex3/src
+cd SOLID/ex03/src
 javac *.java
-java Main
+java Demo03
 ```
 
-## 8. Sample output
+## 7. Current output
 ```text
 === Placement Eligibility ===
 Student: Ayaan (CGR=8.10, attendance=72, credits=18, flag=NONE)
@@ -46,10 +51,3 @@ RESULT: NOT_ELIGIBLE
 - attendance below 75
 Saved evaluation for roll=23BCS1001
 ```
-
-## 9. Hints (OOP-only)
-- Use a list of rule objects and iterate.
-- Keep rules small and single-purpose.
-
-## 10. Stretch goals
-- Read rule thresholds from a config object without editing rule logic.

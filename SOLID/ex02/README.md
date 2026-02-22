@@ -1,4 +1,4 @@
-# Ex2 — SRP: Campus Cafeteria Billing
+# ex02 — SRP: Campus Cafeteria Billing
 
 ## 1. Context
 A cafeteria billing console generates invoices for student orders. It currently handles menu definition, tax logic, discount logic, invoice formatting, and persistence.
