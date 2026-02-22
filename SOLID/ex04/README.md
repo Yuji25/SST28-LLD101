@@ -1,4 +1,4 @@
-# Ex4 — OCP: Hostel Fee Calculator
+# ex04 — OCP: Hostel Fee Calculator
 
 ## 1. Context
 Hostel fees depend on room type and add-ons. New room types and add-ons will be introduced.
@@ -16,28 +16,33 @@ Hostel fees depend on room type and add-ons. New room types and add-ons will be 
 5. Calculator also prints and persists booking data.
 
 ## 4. Your task
-Checkpoint A: Run and capture output.
-Checkpoint B: Encapsulate room pricing and add-on pricing behind abstractions.
-Checkpoint C: Remove switch-case from main calculation logic.
-Checkpoint D: Preserve output.
+Checkpoint A: 
+- Run and capture output.
 
-## 5. Constraints
-- Keep receipt formatting identical.
-- Keep `BookingRequest` fields unchanged.
-- No external libs.
+Checkpoint B: 
+- Encapsulate room pricing and add-on pricing behind abstractions.
 
-## 6. Acceptance criteria
-- New room type can be added without editing a switch in calculator.
-- Add-ons can be added without editing the core fee algorithm.
+Checkpoint C: 
+- Remove switch-case from main calculation logic.
 
-## 7. How to run
+Checkpoint D: 
+- Preserve output.
+
+## 5. Humne kya kia
+| Principle | Evidence |
+|-----------|----------|
+| S (SRP) | Room pricing → RoomPricing, Add-on pricing → AddOnPricing, Calculator handles orchestration only, Repository handles persistence only. Each has ONE responsibility. |
+| O (OCP) | Calculator is closed for modification and open for extension via RoomPricing and AddOnPricing interfaces (add DeluxeACRoomPricing, ParkingPricing without editing the calculator). |
+| L (LSP) | Any RoomPricing, AddOnPricing, or BookingRepository implementation can substitute the existing one without breaking the system. |
+
+## 6. How to run
 ```bash
-cd SOLID/Ex4/src
+cd SOLID/ex04/src
 javac *.java
-java Main
+java Demo04
 ```
 
-## 8. Sample output
+## 7. Current output
 ```text
 === Hostel Fee Calculator ===
 Room: DOUBLE | AddOns: [LAUNDRY, MESS]
@@ -46,10 +51,3 @@ Deposit: 5000.00
 TOTAL DUE NOW: 21000.00
 Saved booking: H-7781
 ```
-
-## 9. Hints (OOP-only)
-- Prefer a list of pricing components (room + add-ons) that contribute to totals.
-- Keep printing separate from calculation.
-
-## 10. Stretch goals
-- Add “late fee” rule without editing the main calculation loop.
