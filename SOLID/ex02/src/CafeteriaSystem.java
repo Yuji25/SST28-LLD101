@@ -1,42 +1,68 @@
 import java.util.*;
 
-public class CafeteriaSystem {
+public class CafeteriaSystem 
+{
     private final Map<String, MenuItem> menu = new LinkedHashMap<>();
-    private final FileStore store = new FileStore();
+    private final TaxRules taxRules;
+    private final DiscountRules discountRules;
+    private final InvoiceFormatter formatter;
+    private final InvoiceRepository repository;
     private int invoiceSeq = 1000;
 
-    public void addToMenu(MenuItem i) { menu.put(i.id, i); }
+    public CafeteriaSystem(TaxRules taxRules, DiscountRules discountRules,
+                          InvoiceFormatter formatter, InvoiceRepository repository) 
+    {
+        this.taxRules = taxRules;
+        this.discountRules = discountRules;
+        this.formatter = formatter;
+        this.repository = repository;
+    }
 
-    // Intentionally SRP-violating: menu mgmt + tax + discount + format + persistence.
-    public void checkout(String customerType, List<OrderLine> lines) {
-        String invId = "INV-" + (++invoiceSeq);
-        StringBuilder out = new StringBuilder();
-        out.append("Invoice# ").append(invId).append("\n");
+    public void addToMenu(MenuItem item)
+    {
+        menu.put(item.id, item);
+    }
 
+    public void checkout(List<OrderLine> lines) 
+    {
+        String invoiceId = "INV-" + (++invoiceSeq);
+
+        List<OrderLineWithPrice> enrichedLines = new ArrayList<>();
         double subtotal = 0.0;
-        for (OrderLine l : lines) {
-            MenuItem item = menu.get(l.itemId);
-            double lineTotal = item.price * l.qty;
-            subtotal += lineTotal;
-            out.append(String.format("- %s x%d = %.2f\n", item.name, l.qty, lineTotal));
+        
+        for (OrderLine line : lines) 
+        {
+            MenuItem item = menu.get(line.itemId);
+            if (item != null) 
+            {
+                OrderLineWithPrice enriched = new OrderLineWithPrice(
+                    item.name, line.qty, item.price
+                );
+
+                enrichedLines.add(enriched);
+                subtotal += enriched.lineTotal;
+            }
         }
 
-        double taxPct = TaxRules.taxPercent(customerType);
-        double tax = subtotal * (taxPct / 100.0);
+        double tax = taxRules.calculateTax(subtotal);
 
-        double discount = DiscountRules.discountAmount(customerType, subtotal, lines.size());
+        double discount = discountRules.calculateDiscount(subtotal, lines.size());
 
         double total = subtotal + tax - discount;
 
-        out.append(String.format("Subtotal: %.2f\n", subtotal));
-        out.append(String.format("Tax(%.0f%%): %.2f\n", taxPct, tax));
-        out.append(String.format("Discount: -%.2f\n", discount));
-        out.append(String.format("TOTAL: %.2f\n", total));
+        Invoice invoice = new Invoice(
+            invoiceId, enrichedLines, subtotal, tax, discount, total,
+            taxRules.getTaxDescription()
+        );
 
-        String printable = InvoiceFormatter.identityFormat(out.toString());
-        System.out.print(printable);
+        String formattedInvoice = formatter.format(invoice);
 
-        store.save(invId, printable);
-        System.out.println("Saved invoice: " + invId + " (lines=" + store.countLines(invId) + ")");
+        System.out.print(formattedInvoice);
+
+        repository.save(invoice, formattedInvoice);
+
+        FileStore fileStore = (FileStore) repository;
+        int lineCount = fileStore.countLines(invoiceId);
+        System.out.println("Saved invoice: " + invoiceId + " (lines=" + lineCount + ")");
     }
 }
