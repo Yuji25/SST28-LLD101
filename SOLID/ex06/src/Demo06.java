@@ -1,5 +1,7 @@
-public class Main {
-    public static void main(String[] args) {
+public class Demo06 
+{
+    public static void main(String[] args) 
+    {
         System.out.println("=== Notification Demo ===");
         AuditLog audit = new AuditLog();
 
@@ -11,9 +13,13 @@ public class Main {
 
         email.send(n);
         sms.send(n);
-        try {
+        
+        try 
+        {
             wa.send(n);
-        } catch (RuntimeException ex) {
+        } 
+        catch (RuntimeException ex) 
+        {
             System.out.println("WA ERROR: " + ex.getMessage());
             audit.add("WA failed");
         }

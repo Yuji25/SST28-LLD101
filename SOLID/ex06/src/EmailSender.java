@@ -1,12 +1,23 @@
-public class EmailSender extends NotificationSender {
-    public EmailSender(AuditLog audit) { super(audit); }
+public class EmailSender extends NotificationSender 
+{
+    public EmailSender(AuditLog audit) 
+    {
+        super(audit);
+    }
 
     @Override
-    public void send(Notification n) {
-        // LSP smell: truncates silently, changing meaning
-        String body = n.body;
-        if (body.length() > 40) body = body.substring(0, 40);
-        System.out.println("EMAIL -> to=" + n.email + " subject=" + n.subject + " body=" + body);
+    protected void validate(Notification n) 
+    {
+        if (n.email == null || n.email.isBlank()) 
+        {
+            throw new IllegalArgumentException("Email address is required");
+        }
+    }
+
+    @Override
+    protected void doSend(Notification n) 
+    {
+        System.out.println("EMAIL -> to=" + n.email + " subject=" + n.subject + " body=" + n.body);
         audit.add("email sent");
     }
 }
