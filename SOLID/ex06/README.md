@@ -39,6 +39,6 @@ java Demo06
 === Notification Demo ===
 EMAIL -> to=riya@sst.edu subject=Welcome body=Hello and welcome to SST!
 SMS -> to=9876543210 body=Hello and welcome to SST!
-WA ERROR: phone must start with + and country code
+WA -> to=+919876543210 body=Hello and welcome to SST!
 AUDIT entries=3
 ```
