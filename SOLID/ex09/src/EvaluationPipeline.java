@@ -1,15 +1,19 @@
 public class EvaluationPipeline {
-    // DIP violation: high-level module constructs concretes directly
-    public void evaluate(Submission sub) {
-        Rubric rubric = new Rubric();
-        PlagiarismChecker pc = new PlagiarismChecker();
-        CodeGrader grader = new CodeGrader();
-        ReportWriter writer = new ReportWriter();
+    private final PlagiarismCheckable checker;
+    private final CodeGradable grader;
+    private final ReportWritable writer;
 
-        int plag = pc.check(sub);
+    public EvaluationPipeline(PlagiarismCheckable checker, CodeGradable grader, ReportWritable writer) {
+        this.checker = checker;
+        this.grader = grader;
+        this.writer = writer;
+    }
+
+    public void evaluate(Submission sub) {
+        int plag = checker.check(sub);
         System.out.println("PlagiarismScore=" + plag);
 
-        int code = grader.grade(sub, rubric);
+        int code = grader.grade(sub);
         System.out.println("CodeScore=" + code);
 
         String reportName = writer.write(sub, plag, code);
@@ -20,3 +24,5 @@ public class EvaluationPipeline {
         System.out.println("FINAL: " + result + " (total=" + total + ")");
     }
 }
+
+// now rather than using concrete classes it is now dependent on a layer of abstraction. 

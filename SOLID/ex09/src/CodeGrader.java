@@ -1,7 +1,13 @@
-public class CodeGrader {
-    public int grade(Submission s, Rubric r) {
-        // fake scoring (but deterministic)
+public class CodeGrader implements CodeGradable {
+    private final Rubric rubric;
+
+    public CodeGrader(Rubric rubric) { this.rubric = rubric; }
+
+    @Override
+    public int grade(Submission s) {
         int base = Math.min(80, 50 + s.code.length() % 40);
-        return base + r.bonus;
+        return base + rubric.bonus;
     }
 }
+
+// implements their lean interface to maintain abstraction and DIP
