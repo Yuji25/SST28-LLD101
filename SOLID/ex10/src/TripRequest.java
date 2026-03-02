@@ -7,3 +7,5 @@ public class TripRequest {
         this.studentId = studentId; this.from = from; this.to = to;
     }
 }
+
+// Given - No change

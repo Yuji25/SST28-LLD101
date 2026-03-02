@@ -3,3 +3,5 @@ public class BookingReceipt {
     public final double fare;
     public BookingReceipt(String id, double fare) { this.id = id; this.fare = fare; }
 }
+
+// Given - No change

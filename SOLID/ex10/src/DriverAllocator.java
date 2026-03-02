@@ -1,6 +1,8 @@
-public class DriverAllocator {
+public class DriverAllocator implements DriverAllocatable {
+    @Override
     public String allocate(String studentId) {
-        // fake deterministic driver
         return "DRV-17";
     }
 }
+
+// now it implements its respective interface
