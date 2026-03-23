@@ -1,0 +1,50 @@
+# Design a Pen 
+
+## Overview
+- Sir told us to design a pen and this has been asked in the SDE II Interview at Amazon. One of his colleague got rejected in this. 
+---
+### Core Behaviors
+
+- `write(String text)`
+- `refill(String color)`
+- `start()`
+- `close()`
+
+---
+
+### Constraints
+
+- Must call `start()` before `write()` ❗
+- `write()` behavior differs per pen type
+- `refill()` differs per pen type
+- Refill always sets ink to 100%
+
+---
+
+### Variations
+
+### 1. Pen Types
+
+- Ink Pen
+- Ball Pen
+- Gel Pen
+
+### 2. Mechanism
+
+- With Cap
+- Click mechanism
+
+### 3. Color
+
+- Fixed at a time
+- Can change during refill
+---
+### Additional Features
+- We have to add `Grip` to the pen due to which writing behavior will change. 
+- Constraint: Cannot modify existing code (LEGACY)
+---
+
+## What I did
+- Successfully implemented and all the necessary files are in the `src` folder.
+- Suppose client is the `Main` class, just run that.
+- Also have added the Class Diagram in the `docs` folder.
