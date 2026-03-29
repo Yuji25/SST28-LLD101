@@ -16,9 +16,6 @@ public class Main {
         System.out.print("Difficulty (easy/hard): ");
         String diffInput = sc.next().trim().toLowerCase();
 
-        Difficulty difficulty = diffInput.equals("hard") ? Difficulty.HARD : Difficulty.EASY;
-        DifficultyStrategy strategy = difficulty == Difficulty.HARD ? new HardDifficulty() : new EasyDifficulty();
-
         List<Player> players = new ArrayList<>();
         for (int i = 1; i <= x; i++) {
             System.out.print("Player " + i + " name: ");
@@ -28,10 +25,9 @@ public class Main {
 
         sc.nextLine();
 
-        Board board = new Board(n);
-        Game game = new Game(board, players, strategy, sc);
+        Game game = GameFactory.createGame(n, players, diffInput, sc);
 
-        System.out.println("\n=== Snake and Ladder (" + difficulty + ") | Board: " + n + "x" + n + " ===\n");
+        System.out.println("\n=== Snake and Ladder (" + diffInput + ") | Board: " + n + "x" + n + " ===\n");
         game.start();
 
         sc.close();
